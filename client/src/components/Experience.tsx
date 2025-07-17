@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, RotateCcw } from 'lucide-react';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import { Modal, ModalHeader, ModalContent } from '@/components/ui/modal';
 import cvData from '@/data/cv.json';
@@ -7,6 +7,8 @@ import cvData from '@/data/cv.json';
 export const Experience: React.FC = () => {
   const { ref, hasIntersected } = useIntersectionObserver();
   const [selectedExperience, setSelectedExperience] = useState<string | null>(null);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const openModal = (experienceId: string) => {
     setSelectedExperience(experienceId);
@@ -18,6 +20,25 @@ export const Experience: React.FC = () => {
 
   const getExperienceById = (id: string) => {
     return cvData.experience.find(exp => exp.id === id);
+  };
+
+  const rotateCards = () => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setCurrentCardIndex((prev) => (prev + 1) % cvData.experience.length);
+    setTimeout(() => setIsAnimating(false), 500);
+  };
+
+  const resetStack = () => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setCurrentCardIndex(0);
+    setTimeout(() => setIsAnimating(false), 500);
+  };
+
+  const getCardPosition = (index: number) => {
+    const relativeIndex = (index - currentCardIndex + cvData.experience.length) % cvData.experience.length;
+    return relativeIndex;
   };
 
   const selectedExp = selectedExperience ? getExperienceById(selectedExperience) : null;
@@ -32,116 +53,173 @@ export const Experience: React.FC = () => {
           }`}
         >
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-900 dark:text-white">Experience Timeline</h2>
-            <div className="w-24 h-1 bg-primary mx-auto"></div>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-900 dark:text-white">Experience Stack</h2>
+            <p className="text-slate-600 dark:text-slate-400 mb-6">Click the front card to rotate through experiences</p>
+            <div className="w-24 h-1 bg-primary mx-auto mb-6"></div>
+            <div className="flex justify-center space-x-4">
+              <button
+                onClick={rotateCards}
+                disabled={isAnimating}
+                className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+              >
+                <RotateCcw size={16} />
+                <span>Rotate Cards</span>
+              </button>
+              <button
+                onClick={resetStack}
+                disabled={isAnimating}
+                className="flex items-center space-x-2 bg-slate-600 text-white px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors disabled:opacity-50"
+              >
+                <span>Reset Stack</span>
+              </button>
+            </div>
           </div>
           
-          {/* Desktop Horizontal Timeline */}
+          {/* Desktop Card Stack */}
           <div className="hidden lg:block">
+            <div className="relative flex justify-center items-center min-h-[500px]">
+              {cvData.experience.map((exp, index) => {
+                const position = getCardPosition(index);
+                const isTop = position === 0;
+                const isVisible = position < 4; // Show only top 4 cards
+                
+                if (!isVisible) return null;
+                
+                return (
+                  <div
+                    key={exp.id}
+                    className={`absolute w-96 transition-all duration-500 ease-in-out ${
+                      isAnimating ? 'pointer-events-none' : 'cursor-pointer'
+                    }`}
+                    style={{
+                      transform: `
+                        translateX(${position * 8}px) 
+                        translateY(${position * 8}px) 
+                        scale(${1 - position * 0.05})
+                        rotateZ(${position * 2}deg)
+                      `,
+                      zIndex: 10 - position,
+                      opacity: 1 - position * 0.15
+                    }}
+                    onClick={isTop ? rotateCards : undefined}
+                  >
+                    <div className={`bg-white dark:bg-slate-900 rounded-xl p-6 shadow-xl border border-slate-100 dark:border-slate-800 relative overflow-hidden ${
+                      isTop ? 'shadow-2xl ring-2 ring-primary/20' : 'shadow-lg'
+                    }`}>
+                      {/* Gradient overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-blue-600/5 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+                      
+                      {/* Card indicator */}
+                      <div className="absolute top-4 right-4">
+                        <div className={`w-3 h-3 rounded-full ${
+                          isTop ? 'bg-primary animate-pulse' : 'bg-slate-300 dark:bg-slate-600'
+                        }`}></div>
+                      </div>
+                      
+                      <div className="relative z-10">
+                        <div className="flex items-center justify-center mb-4">
+                          <div className="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
+                            {exp.period}
+                          </div>
+                        </div>
+                        <h3 className="text-xl font-semibold mb-3 text-slate-900 dark:text-white text-center">{exp.title}</h3>
+                        <p className="text-slate-600 dark:text-slate-400 mb-3 font-medium text-center">{exp.organization}</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-500 mb-4 text-center">{exp.description}</p>
+                        
+                        {isTop && (
+                          <div className="flex items-center justify-center space-x-4 text-xs text-primary">
+                            <span>Click to rotate</span>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openModal(exp.id);
+                              }}
+                              className="bg-primary text-white px-3 py-1 rounded-md hover:bg-primary/90 transition-colors"
+                            >
+                              View Details
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          
+          {/* Mobile Simple Stack */}
+          <div className="lg:hidden">
             <div className="relative">
-              {/* Horizontal Timeline Line */}
-              <div className="absolute top-72 left-0 right-0 h-1 bg-gradient-to-r from-primary via-blue-500 to-blue-600 shadow-sm"></div>
+              {/* Current card indicator */}
+              <div className="text-center mb-4">
+                <span className="text-sm text-slate-500 dark:text-slate-400">
+                  {currentCardIndex + 1} of {cvData.experience.length}
+                </span>
+              </div>
               
-              {/* Timeline Items */}
-              <div className="flex justify-between items-start space-x-4 overflow-x-auto pb-8">
+              {/* Mobile card stack */}
+              <div className="relative flex justify-center items-center min-h-[400px]">
                 {cvData.experience.map((exp, index) => {
-                  const hasIntersected = useIntersectionObserver(exp.id);
+                  const position = getCardPosition(index);
+                  const isTop = position === 0;
+                  const isVisible = position < 2; // Show only top 2 cards on mobile
+                  
+                  if (!isVisible) return null;
                   
                   return (
-                    <div key={exp.id} className="flex-shrink-0 w-72 relative" id={exp.id}>
-                      {/* Experience Card */}
-                      <div 
-                        className={`bg-white dark:bg-slate-900 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105 hover:-translate-y-2 border border-slate-100 dark:border-slate-800 relative overflow-hidden ${
-                          hasIntersected ? 'animate-fade-in' : ''
-                        }`}
-                        style={{ animationDelay: `${index * 200}ms` }}
-                        onClick={() => openModal(exp.id)}
-                      >
-                        {/* Subtle gradient overlay */}
+                    <div
+                      key={exp.id}
+                      className={`absolute w-80 transition-all duration-500 ease-in-out ${
+                        isAnimating ? 'pointer-events-none' : 'cursor-pointer'
+                      }`}
+                      style={{
+                        transform: `
+                          translateX(${position * 6}px) 
+                          translateY(${position * 6}px) 
+                          scale(${1 - position * 0.1})
+                        `,
+                        zIndex: 10 - position,
+                        opacity: 1 - position * 0.3
+                      }}
+                      onClick={isTop ? rotateCards : undefined}
+                    >
+                      <div className={`bg-white dark:bg-slate-900 rounded-xl p-6 shadow-xl border border-slate-100 dark:border-slate-800 relative overflow-hidden ${
+                        isTop ? 'shadow-2xl ring-2 ring-primary/20' : 'shadow-lg'
+                      }`}>
+                        {/* Gradient overlay */}
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-blue-600/5 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+                        
                         <div className="relative z-10">
-                          <div className="flex items-center justify-center mb-3">
+                          <div className="flex items-center justify-center mb-4">
                             <div className="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
                               {exp.period}
                             </div>
                           </div>
-                          <h3 className="text-xl font-semibold mb-2 text-slate-900 dark:text-white text-center">{exp.title}</h3>
-                          <p className="text-slate-600 dark:text-slate-400 mb-2 font-medium text-center">{exp.organization}</p>
-                          <p className="text-sm text-slate-500 dark:text-slate-500 mb-3 text-center">{exp.description}</p>
-                          <div className="flex items-center justify-center text-xs text-primary">
-                            <span>Click to view details</span>
-                            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </div>
+                          <h3 className="text-xl font-semibold mb-3 text-slate-900 dark:text-white text-center">{exp.title}</h3>
+                          <p className="text-slate-600 dark:text-slate-400 mb-3 font-medium text-center">{exp.organization}</p>
+                          <p className="text-sm text-slate-500 dark:text-slate-500 mb-4 text-center">{exp.description}</p>
+                          
+                          {isTop && (
+                            <div className="flex items-center justify-center space-x-4 text-xs text-primary">
+                              <span>Tap to rotate</span>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openModal(exp.id);
+                                }}
+                                className="bg-primary text-white px-3 py-1 rounded-md hover:bg-primary/90 transition-colors"
+                              >
+                                View Details
+                              </button>
+                            </div>
+                          )}
                         </div>
-                      </div>
-                      
-                      {/* Connecting Line */}
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0.5 h-8 bg-gradient-to-b from-primary/60 to-transparent"></div>
-                      
-                      {/* Timeline Dot */}
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-7 w-12 h-12 bg-gradient-to-br from-primary via-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-xl border-4 border-white dark:border-slate-900 z-10">
-                        <div className="w-4 h-4 bg-white rounded-full shadow-sm"></div>
-                        {/* Glowing effect */}
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-blue-600 opacity-20 animate-pulse"></div>
                       </div>
                     </div>
                   );
                 })}
               </div>
-            </div>
-          </div>
-          
-          {/* Mobile Vertical Timeline */}
-          <div className="lg:hidden">
-            <div className="relative">
-              {/* Mobile Timeline Line */}
-              <div className="absolute left-6 top-0 w-0.5 bg-gradient-to-b from-primary via-blue-500 to-blue-600 shadow-sm" 
-                   style={{ height: `${cvData.experience.length * 180}px` }}></div>
-
-              {cvData.experience.map((exp, index) => {
-                const hasIntersected = useIntersectionObserver(exp.id);
-                
-                return (
-                  <div key={exp.id} className="relative mb-12" id={exp.id}>
-                    {/* Mobile Layout */}
-                    <div className="w-full pl-16">
-                      <div 
-                        className={`bg-white dark:bg-slate-900 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105 border border-slate-100 dark:border-slate-800 relative overflow-hidden ${
-                          hasIntersected ? 'animate-fade-in' : ''
-                        }`}
-                        style={{ animationDelay: `${index * 200}ms` }}
-                        onClick={() => openModal(exp.id)}
-                      >
-                        {/* Subtle gradient overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-blue-600/5 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-                        <div className="relative z-10">
-                          <div className="flex items-center mb-3">
-                            <div className="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
-                              {exp.period}
-                            </div>
-                          </div>
-                          <h3 className="text-xl font-semibold mb-2 text-slate-900 dark:text-white">{exp.title}</h3>
-                          <p className="text-slate-600 dark:text-slate-400 mb-2 font-medium">{exp.organization}</p>
-                          <p className="text-sm text-slate-500 dark:text-slate-500 mb-2">{exp.description}</p>
-                          <div className="flex items-center text-xs text-primary">
-                            <span>Click to view details</span>
-                            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Mobile timeline dot */}
-                    <div className="absolute left-4 top-6 w-5 h-5 bg-gradient-to-br from-primary via-blue-500 to-blue-600 rounded-full border-2 border-white dark:border-slate-900 shadow-lg">
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-blue-600 opacity-20 animate-pulse"></div>
-                    </div>
-                  </div>
-                );
-              })}
             </div>
           </div>
         </div>
