@@ -1,0 +1,40 @@
+*Act as a senior front-end developer and UI/UX designer. Your task is to create a personal portfolio website based on a CV. The primary goal of this website is to attract recruiters and potential clients by showcasing skills and projects in a modern, interactive, and professional manner. The website will be built from the following CV data, which will be provided as a JSON object (`cv.json`).*
+
+**1. Core Structure & Content Sections:**
+    * [cite_start]**Hero Section:** Create a full-height hero section with a professional headshot, a compelling headline (e.g., "John Doe - Senior Software Engineer"), a subheading that summarizes key expertise, and social media links (LinkedIn, GitHub). [cite: 19, 20, 21, 70]
+    * **About Me Section:** A brief, engaging biography.
+    * **Interactive Experience Timeline:** Display work experience as a vertical timeline. [cite_start]Each point on the timeline should be clickable, revealing a modal or an expanded view with company name, job title, duration, and key responsibilities/achievements in a bulleted list. [cite: 427]
+    * **Skills Section:** Organize skills into categories (e.g., 'Languages', 'Frameworks', 'Databases', 'Tools'). Use a clean layout, perhaps with logos for each technology.
+    * [cite_start]**Projects Showcase (Bento Grid Layout):** Display key projects in a responsive bento grid. [cite: 425, 1618] The main project should occupy a larger grid space ($2 \times 2$). Each project card must include:
+        * Project title and a short description.
+        * A list of technologies used.
+        * Live demo and source code links.
+        * [cite_start]On hover, the card should scale slightly and a subtle shadow should appear. [cite: 61, 1343]
+    * [cite_start]**Education Section:** A simple list layout detailing educational background. [cite: 431]
+    * [cite_start]**Contact Form:** A responsive contact form with floating labels, form validation, and a clear call-to-action button. [cite: 15]
+    * [cite_start]**Footer:** Include a copyright notice, social media links, and a "Download CV" button that links to a PDF version. [cite: 1660]
+
+**2. Technology Stack & Architecture:**
+    * **Framework:** Use **React** with **Vite** for the development environment.
+    * [cite_start]**Styling:** Implement the design using **Tailwind CSS**. [cite: 9, 44] [cite_start]The CSS should be organized using component-based stylesheets, adhering to clean coding principles. [cite: 149, 150]
+    * **Data Handling:** All personal data (experience, projects, skills) should be fetched from a single `cv.json` file to ensure the website is data-driven and easily updatable.
+    * **Componentization:** Structure the application into reusable components (e.g., `TimelineItem`, `ProjectCard`, `SkillBadge`).
+
+**3. Visual Design & Typography:**
+    * [cite_start]**Aesthetic:** A professional, minimalist, and modern design with a dark mode option. [cite: 858, 859, 879] The layout should be clean with ample white space.
+    * [cite_start]**Color Palette:** Use a monochrome palette (e.g., shades of gray/slate) for the base, with a single vibrant accent color (e.g., electric blue `#3B82F6` or purple `#8B5CF6`) for interactive elements like buttons, links, and hover states. [cite: 922, 930, 1079]
+    * **Typography:**
+        * [cite_start]**Font:** Use the 'Inter' or 'Geist' sans-serif font family, sourced from Google Fonts. [cite: 164, 170]
+        * **Hierarchy:** Establish a clear typographic hierarchy. [cite_start]For example: Headings (H1, H2) should use a bold weight (700), subheadings a semi-bold weight (600), and body text a regular weight (400). [cite: 301, 302, 305, 306, 307, 308, 465, 466]
+        * [cite_start]**Readability:** Ensure a line height of 1.5 for body text for optimal readability. [cite: 737]
+
+**4. Interactivity & Animations:**
+    * **On-Scroll Animations:** As the user scrolls, sections should fade in and slide up subtly. [cite_start]Implement this using the Intersection Observer API. [cite: 347, 348, 349, 350, 1516, 1517]
+    * [cite_start]**Staggered Entrances:** For list items like skills or projects, apply a staggered entrance animation where each item appears sequentially with a 100ms delay. [cite: 359, 360]
+    * **Micro-interactions:** Add subtle feedback on interactive elements. [cite_start]Buttons should have a slight scale effect on click. [cite: 1361, 1362, 1363, 1364]
+    * [cite_start]**Performance:** All animations must be performant (under 500ms for UI interactions) and use hardware-accelerated CSS properties (`transform`, `opacity`). [cite: 391, 1358] [cite_start]Respect user preferences with a `prefers-reduced-motion` media query. [cite: 390]
+
+**5. Responsive & Accessibility:**
+    * [cite_start]**Mobile-First Design:** The layout must be fully responsive and designed mobile-first. [cite: 1532, 1533] [cite_start]The bento grid should collapse into a single-column layout on mobile (below 768px). [cite: 26, 90]
+    * [cite_start]**Touch Targets:** All interactive elements must have a minimum touch target size of 44x44 pixels on mobile devices. [cite: 104, 1588]
+    * **Accessibility (WCAG 2.1 AA):** Ensure the website is accessible. [cite_start]This includes proper semantic HTML, ARIA labels for icons and interactive elements, keyboard navigation, and a minimum color contrast ratio of 4.5:1 for text. [cite: 456, 457, 854]
