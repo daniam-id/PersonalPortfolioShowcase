@@ -2,6 +2,7 @@ import React from 'react';
 import { Linkedin, Mail, Phone, Download, ArrowDown } from 'lucide-react';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import cvData from '@/data/cv.json';
+import './Hero.css';
 
 export const Hero: React.FC = () => {
   const { ref, hasIntersected } = useIntersectionObserver();
@@ -32,13 +33,25 @@ export const Hero: React.FC = () => {
             <span>{cvData.personal.initials}</span>
           </div>
           
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-            {cvData.personal.name}
-          </h1>
-          
-          <p className="text-xl sm:text-2xl text-slate-600 dark:text-slate-400 mb-8 max-w-3xl mx-auto">
-            {cvData.personal.title} & {cvData.personal.subtitle}
-          </p>
+          <div className="flex flex-col items-start max-w-3xl mx-auto">
+            {/* Chat bubble */}
+            <div className="relative inline-block mb-4 ml-40">
+              <div className="bg-primary text-primary-foreground px-4 py-2 rounded-2xl rounded-tl-none text-base font-medium shadow-lg">
+                hi there!
+              </div>
+              <div className="absolute -left-2 top-0 w-3 h-3 bg-primary transform rotate-45"></div>
+            </div>
+            
+            <div className="min-h-[4rem] w-full text-center"> {/* Fixed height container to prevent layout shift */}
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-foreground typewriter">
+                I'm Adam Daniam
+              </h1>
+            </div>
+
+            <p className="text-xl sm:text-2xl text-muted-foreground mb-8 text-center w-full">
+              Leadership-focused Fisheries Product Technology Student & Organizational Development Specialist
+            </p>
+          </div>
           
           <div className="flex justify-center space-x-6 mb-12">
             <a 

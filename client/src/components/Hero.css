@@ -1,0 +1,14 @@
+@keyframes typing {
+  0% { width: 0 }
+  35% { width: 100% }
+  65% { width: 100% }
+  100% { width: 0 }
+}
+
+.typewriter {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 12s steps(40) infinite;
+  border-right: 3px solid currentColor;
+}
