@@ -5,12 +5,13 @@ import { ExternalLink, ArrowLeft } from 'lucide-react';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import { Link } from 'wouter';
 import { Badge } from '@/components/ui/badge';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 interface Project {
   id: string;
   title: string;
   description: string;
-  imageUrl: string;
+  color: string;
   link: string;
   technologies: string[];
 }
@@ -20,7 +21,7 @@ const websiteProjects: Project[] = [
     id: 'web-1',
     title: 'E-commerce Store',
     description: 'A fully functional e-commerce platform with user authentication, product listings, shopping cart, and checkout process.',
-    imageUrl: 'https://via.placeholder.com/400x250/F0F0F0/000000?text=E-commerce+Store',
+    color: 'from-blue-500 to-purple-600',
     link: 'https://example.com/ecommerce',
     technologies: ['React', 'Node.js', 'MongoDB', 'Stripe']
   },
@@ -28,7 +29,7 @@ const websiteProjects: Project[] = [
     id: 'web-2',
     title: 'Blog Platform',
     description: 'A responsive blog platform with rich text editor, comment section, and admin panel for content management.',
-    imageUrl: 'https://via.placeholder.com/400x250/F0F0F0/000000?text=Blog+Platform',
+    color: 'from-green-400 to-teal-500',
     link: 'https://example.com/blog',
     technologies: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Sanity.io']
   },
@@ -36,7 +37,7 @@ const websiteProjects: Project[] = [
     id: 'web-3',
     title: 'Portfolio Website',
     description: 'A personal portfolio website showcasing projects, skills, and contact information with a modern UI.',
-    imageUrl: 'https://via.placeholder.com/400x250/F0F0F0/000000?text=Portfolio+Website',
+    color: 'from-red-500 to-orange-600',
     link: 'https://example.com/portfolio',
     technologies: ['HTML', 'CSS', 'JavaScript', 'GSAP']
   }
@@ -56,43 +57,62 @@ const WebsitePortfolioPage: React.FC = () => {
             </Link>
           </Button>
         </div>
+        
+        <div className="text-center mb-16">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 text-slate-900 dark:text-white">My Web Projects</h1>
+          <p className="text-xl sm:text-2xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
+            A collection of my web development work, showcasing diverse skills and creative solutions.
+          </p>
+          <div className="w-24 h-1 bg-primary mx-auto mt-6"></div>
+        </div>
+
         <div 
           ref={ref}
           className={`transition-all duration-1000 ${
             hasIntersected ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-900 dark:text-white">Website Portfolio</h2>
-            <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Here are some of my web development projects, showcasing my skills in front-end and back-end development.
-            </p>
-            <div className="w-24 h-1 bg-primary mx-auto mt-6"></div>
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {websiteProjects.map(project => (
-              <Card key={project.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <img src={project.imageUrl} alt={project.title} className="w-full h-48 object-cover" />
-                <CardHeader>
-                  <CardTitle className="text-xl font-semibold text-slate-900 dark:text-white">{project.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-grow flex flex-col justify-between">
-                  <p className="text-slate-600 dark:text-slate-400 mb-4">{project.description}</p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {project.technologies.map(tech => (
-                      <Badge key={tech} variant="secondary" className="text-xs">{tech}</Badge>
-                    ))}
+            {websiteProjects.map(project => {
+              const { ref: cardRef, hasIntersected: cardHasIntersected } = useIntersectionObserver({ threshold: 0.1 });
+              return (
+                <Card 
+                  key={project.id} 
+                  ref={cardRef}
+                  className={`flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 group ${
+                    cardHasIntersected ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'
+                  }`}
+                >
+                  <div className="relative w-full">
+                    <AspectRatio ratio={16 / 9}>
+                      <div className={`w-full h-full bg-gradient-to-br ${project.color} flex items-center justify-center text-white text-2xl font-bold`}>
+                        {project.title}
+                      </div>
+                    </AspectRatio>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                      <h3 className="text-white text-lg font-semibold">{project.title}</h3>
+                    </div>
                   </div>
-                  <Button asChild className="w-full bg-primary hover:bg-secondary text-white">
-                    <a href={project.link} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center space-x-2">
-                      <ExternalLink size={16} />
-                      <span>View Project</span>
-                    </a>
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white">{project.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-grow flex flex-col justify-between p-4 pt-2">
+                    <p className="text-slate-600 dark:text-slate-400 text-base mb-3">{project.description}</p>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.technologies.map(tech => (
+                        <Badge key={tech} variant="secondary" className="text-sm">{tech}</Badge>
+                      ))}
+                    </div>
+                    <Button asChild className="w-full bg-primary hover:bg-secondary text-white h-10">
+                      <a href={project.link} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center space-x-2">
+                        <ExternalLink size={16} />
+                        <span>View Project</span>
+                      </a>
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
 
           <div className="text-center mt-16">
