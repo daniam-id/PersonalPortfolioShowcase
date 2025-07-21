@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linkedin, Mail, Phone, Download, ArrowDown } from 'lucide-react';
+import { Linkedin, Mail, Phone, Download, ArrowDown, Instagram } from 'lucide-react';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import cvData from '@/data/cv.json';
 import './Hero.css';
@@ -58,31 +58,40 @@ export const Hero: React.FC = () => {
               href={cvData.personal.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-12 h-12 bg-primary hover:bg-blue-600 text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg"
+              className="w-12 h-12 bg-primary hover:bg-secondary text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg"
               aria-label="LinkedIn Profile"
             >
               <Linkedin size={20} />
             </a>
             <a 
               href={`mailto:${cvData.personal.email}`}
-              className="w-12 h-12 bg-primary hover:bg-blue-600 text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg"
+              className="w-12 h-12 bg-primary hover:bg-secondary text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg"
               aria-label="Email"
             >
               <Mail size={20} />
             </a>
             <a 
               href={`tel:${cvData.personal.phone}`}
-              className="w-12 h-12 bg-primary hover:bg-blue-600 text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg"
+              className="w-12 h-12 bg-primary hover:bg-secondary text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg"
               aria-label="Phone"
             >
               <Phone size={20} />
+            </a>
+            <a 
+              href="https://www.instagram.com/daniam.dnm/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 bg-primary hover:bg-secondary text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg"
+              aria-label="Instagram Profile"
+            >
+              <Instagram size={20} />
             </a>
           </div>
           
           <div className="flex justify-center space-x-4 mb-12">
             <button 
               onClick={scrollToContact}
-              className="px-8 py-3 bg-primary hover:bg-blue-600 text-white rounded-full font-semibold transition-all duration-300 hover:scale-105 shadow-lg active:scale-95"
+              className="px-8 py-3 bg-primary hover:bg-secondary text-white rounded-full font-semibold transition-all duration-300 hover:scale-105 shadow-lg active:scale-95"
             >
               Get In Touch
             </button>

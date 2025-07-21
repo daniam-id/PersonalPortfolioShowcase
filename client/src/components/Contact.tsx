@@ -183,7 +183,7 @@ export const Contact: React.FC = () => {
               <button 
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-8 py-3 bg-primary hover:bg-blue-600 disabled:bg-blue-400 text-white rounded-lg font-semibold transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center space-x-2"
+                className="w-full px-8 py-3 bg-primary hover:bg-secondary disabled:bg-blue-400 text-white rounded-lg font-semibold transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center space-x-2"
               >
                 {isSubmitting ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a modern, responsive personal portfolio website built for Adam Dani Apta Mahendra, a leadership-focused Fisheries Product Technology student and organizational development specialist. The application follows a full-stack architecture with React frontend and Express backend, designed to showcase professional experience, skills, and educational background to attract recruiters and potential clients.
+This is a modern, responsive personal portfolio website built for Adam Daniam, a leadership-focused Fisheries Product Technology student and organizational development specialist. The application follows a full-stack architecture with React frontend and Express backend, designed to showcase professional experience, skills, and educational background to attract recruiters and potential clients.
 
 ## User Preferences
 

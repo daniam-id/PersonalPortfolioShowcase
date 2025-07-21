@@ -9,7 +9,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const cvData = {
         personal: {
-          name: "Adam Dani Apta Mahendra",
+          name: "Adam Daniam",
           email: "adam.dani.apta-2024@fpk.unair.ac.id",
           phone: "+6285156057360",
           linkedin: "https://www.linkedin.com/in/adam-dani-apta-mahendra-099408323",
