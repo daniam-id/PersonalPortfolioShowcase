@@ -1,5 +1,12 @@
 import React from 'react';
 import { Linkedin, Mail, Phone, Download, ArrowDown, Instagram } from 'lucide-react';
+import { Link } from "wouter";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import cvData from '@/data/cv.json';
 import './Hero.css';
@@ -95,6 +102,23 @@ export const Hero: React.FC = () => {
             >
               Get In Touch
             </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="px-8 py-3 bg-primary hover:bg-secondary text-white rounded-full font-semibold transition-all duration-300 hover:scale-105 shadow-lg active:scale-95"
+                >
+                  View Portfolio
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem asChild>
+                  <Link href="/website">Website</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/photography">Photography</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <button 
               onClick={downloadCV}
               className="px-8 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-full font-semibold transition-all duration-300 hover:scale-105 active:scale-95 flex items-center space-x-2"
