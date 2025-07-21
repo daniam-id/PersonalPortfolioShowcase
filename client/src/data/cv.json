@@ -49,6 +49,32 @@
       ]
     }
   ],
+  "committeeExperience": [
+    {
+      "id": "committee-1",
+      "title": "Event Coordinator",
+      "organization": "Tech Conference 2023",
+      "period": "2023",
+      "description": "Coordinated the planning and execution of the annual tech conference.",
+      "achievements": [
+        "Managed a team of 20 volunteers.",
+        "Secured 5 major sponsors.",
+        "Increased attendee satisfaction by 15%."
+      ]
+    },
+    {
+      "id": "committee-2",
+      "title": "Head of Logistics",
+      "organization": "University Orientation Week",
+      "period": "2022",
+      "description": "Oversaw all logistical aspects of the orientation week for new students.",
+      "achievements": [
+        "Coordinated with multiple university departments.",
+        "Managed the event budget of $50,000.",
+        "Ensured a smooth experience for over 2,000 new students."
+      ]
+    }
+  ],
   "education": [
     {
       "degree": "Bachelor of Fishery Product Technology",

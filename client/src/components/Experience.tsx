@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { CheckCircle, RotateCcw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { CheckCircle, Users, Briefcase } from 'lucide-react';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import { Modal, ModalHeader, ModalContent } from '@/components/ui/modal';
 import cvData from '@/data/cv.json';
@@ -9,6 +9,13 @@ export const Experience: React.FC = () => {
   const [selectedExperience, setSelectedExperience] = useState<string | null>(null);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [experienceType, setExperienceType] = useState<'organization' | 'committee'>('organization');
+
+  const experiences = experienceType === 'organization' ? cvData.experience : cvData.committeeExperience;
+
+  useEffect(() => {
+    setCurrentCardIndex(0);
+  }, [experienceType]);
 
   const openModal = (experienceId: string) => {
     setSelectedExperience(experienceId);
@@ -19,25 +26,18 @@ export const Experience: React.FC = () => {
   };
 
   const getExperienceById = (id: string) => {
-    return cvData.experience.find(exp => exp.id === id);
+    return [...cvData.experience, ...cvData.committeeExperience].find(exp => exp.id === id);
   };
 
   const rotateCards = () => {
     if (isAnimating) return;
     setIsAnimating(true);
-    setCurrentCardIndex((prev) => (prev + 1) % cvData.experience.length);
-    setTimeout(() => setIsAnimating(false), 500);
-  };
-
-  const resetStack = () => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setCurrentCardIndex(0);
+    setCurrentCardIndex((prev) => (prev + 1) % experiences.length);
     setTimeout(() => setIsAnimating(false), 500);
   };
 
   const getCardPosition = (index: number) => {
-    const relativeIndex = (index - currentCardIndex + cvData.experience.length) % cvData.experience.length;
+    const relativeIndex = (index - currentCardIndex + experiences.length) % experiences.length;
     return relativeIndex;
   };
 
@@ -53,24 +53,31 @@ export const Experience: React.FC = () => {
           }`}
         >
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-900 dark:text-white">Experience Stack</h2>
-            <p className="text-slate-600 dark:text-slate-400 mb-6">Click the front card to rotate through experiences</p>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-900 dark:text-white">Experience</h2>
+            <p className="text-slate-600 dark:text-slate-400 mb-6">Explore my organizational and committee experiences.</p>
             <div className="w-24 h-1 bg-primary mx-auto mb-6"></div>
             <div className="flex justify-center space-x-4">
               <button
-                onClick={rotateCards}
-                disabled={isAnimating}
-                className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+                onClick={() => setExperienceType('organization')}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                  experienceType === 'organization'
+                    ? 'bg-primary text-white'
+                    : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600'
+                }`}
               >
-                <RotateCcw size={16} />
-                <span>Rotate Cards</span>
+                <Users size={16} />
+                <span>Organization</span>
               </button>
               <button
-                onClick={resetStack}
-                disabled={isAnimating}
-                className="flex items-center space-x-2 bg-slate-600 text-white px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors disabled:opacity-50"
+                onClick={() => setExperienceType('committee')}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                  experienceType === 'committee'
+                    ? 'bg-primary text-white'
+                    : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600'
+                }`}
               >
-                <span>Reset Stack</span>
+                <Briefcase size={16} />
+                <span>Committee</span>
               </button>
             </div>
           </div>
@@ -78,7 +85,7 @@ export const Experience: React.FC = () => {
           {/* Desktop Card Stack */}
           <div className="hidden lg:block">
             <div className="relative flex justify-center items-center min-h-[500px]">
-              {cvData.experience.map((exp, index) => {
+              {experiences.map((exp, index) => {
                 const position = getCardPosition(index);
                 const isTop = position === 0;
                 const isVisible = position < 4; // Show only top 4 cards
@@ -154,13 +161,13 @@ export const Experience: React.FC = () => {
               {/* Current card indicator */}
               <div className="text-center mb-4">
                 <span className="text-sm text-slate-500 dark:text-slate-400">
-                  {currentCardIndex + 1} of {cvData.experience.length}
+                  {currentCardIndex + 1} of {experiences.length}
                 </span>
               </div>
               
               {/* Mobile card stack */}
               <div className="relative flex justify-center items-center min-h-[400px]">
-                {cvData.experience.map((exp, index) => {
+                {experiences.map((exp, index) => {
                   const position = getCardPosition(index);
                   const isTop = position === 0;
                   const isVisible = position < 2; // Show only top 2 cards on mobile
